@@ -22,7 +22,7 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --approve-builds
+        run: pnpm install --frozen-lockfile --allow-build
 
       - name: Run tests
         run: pnpm test
