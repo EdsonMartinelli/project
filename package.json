@@ -10,7 +10,7 @@
     "eslint": "pnpm exec eslint ./src",
     "fix-eslint": "pnpm exec eslint ./src --fix",
     "prettier": "pnpm exec prettier ./src --write",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "jiti": "^2.7.0",
     "prettier": "3.9.10",
     "ts-jest": "^29.4.14",
+    "ts-node": "^10.9.2",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.2"
