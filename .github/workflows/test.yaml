@@ -22,7 +22,7 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --allow-build=@parcel/watcher --allow-build=esbuild --allow-build=unrs-resolver
+        run: pnpm install --frozen-lockfile
 
       - name: Run tests
         run: pnpm test
