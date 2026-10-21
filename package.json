@@ -7,8 +7,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch ./src/server.ts",
-    "eslint": "pnpm exec eslint ./src",
-    "fix-eslint": "pnpm exec eslint ./src --fix",
+    "lint": "pnpm exec eslint ./src",
+    "fix-lint": "pnpm exec eslint ./src --fix",
     "prettier": "pnpm exec prettier ./src --write",
     "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
@@ -38,5 +38,12 @@
     "cors": "^2.8.6",
     "express": "^5.3.0",
     "helmet": "^8.3.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.4.0",
+      "onFail": "download"
+    }
   }
 }
