@@ -1,5 +1,5 @@
 import { UserController } from "../controllers/UserController.ts";
-import { UserService } from "../services/UserService.ts";
+import { UserService } from "../services/user/UserService.ts";
 
 export class UserControllerFactory {
   private userController: UserController;
