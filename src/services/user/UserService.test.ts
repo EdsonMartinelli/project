@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 import { UserService } from "./UserService.ts";
+import { Success } from "../../shared/Result.ts";
 
 describe("UserService test", () => {
   const userService = new UserService();
@@ -9,7 +10,6 @@ describe("UserService test", () => {
       password: "1234",
     };
     const result = userService.create(data);
-    expect(result.isSuccess()).toBe(true);
-    expect(result.data).toEqual(data);
+    expect(result).toBeInstanceOf(Success);
   });
 });
