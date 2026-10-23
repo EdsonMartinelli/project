@@ -1,10 +1,14 @@
 type handlers<T, E, R> = {
-  onSuccess: (x: T) => R;
-  onFailure: (x: E) => R;
+  onSuccess: (data: T) => R;
+  onFailure: (error: E) => R;
 };
 
 export interface Result<T, E> {
   detach<R>(handlers: handlers<T, E, R>): R;
+  bind<D, U>(fn: (data: T) => Result<D, U>): Result<D, E | U>;
+  bindAsync<D, U>(
+    fn: (data: T) => Promise<Result<D, U>>,
+  ): Promise<Result<D, E | U>>;
 }
 export class Success<T, E> implements Result<T, E> {
   private readonly data: T;
@@ -13,6 +17,16 @@ export class Success<T, E> implements Result<T, E> {
   }
   detach<R>(handler: handlers<T, E, R>): R {
     return handler.onSuccess(this.data);
+  }
+
+  bind<D, U>(fn: (data: T) => Result<D, U>): Result<D, U> {
+    return fn(this.data);
+  }
+
+  bindAsync<D, U>(
+    fn: (data: T) => Promise<Result<D, U>>,
+  ): Promise<Result<D, U>> {
+    return fn(this.data);
   }
 }
 
@@ -24,6 +38,18 @@ export class Failure<T, E> implements Result<T, E> {
 
   detach<R>(handler: handlers<T, E, R>): R {
     return handler.onFailure(this.error);
+  }
+
+  bind<D, U>(fn: (data: T) => Result<D, U>): Result<D, E> {
+    return new Failure<D, E>(this.error);
+  }
+
+  bindAsync<D, U>(
+    fn: (data: T) => Promise<Result<D, U>>,
+  ): Promise<Result<D, E>> {
+    return new Promise((resolve, _) => {
+      resolve(new Failure<D, E>(this.error));
+    });
   }
 }
 
@@ -46,14 +72,3 @@ export class ResultBuilder {
     return result.detach(handlers);
   }
 }
-
-// const res = Result.ok<number, DomainError>(1);
-// Result.unwrap(res, {
-//   onSuccess: (x) => {
-//     const y = x;
-//     console.log(y);
-//   },
-//   onFailure: (x) => {
-//     console.log(x);
-//   },
-// });
