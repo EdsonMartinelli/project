@@ -1,5 +1,5 @@
 import { ResultBuilder, type Result } from "../../shared/Result.ts";
-type userInfo = {
+export type userInfo = {
   email: string;
   password: string;
 };
@@ -26,7 +26,7 @@ export class UserService {
   private async w(data: userInfo): Promise<Result<userInfo, number>> {
     return new Promise((resolve, _) =>
       setTimeout(() => {
-        resolve(ResultBuilder.fail(200));
+        resolve(ResultBuilder.ok(data));
       }, 1000),
     );
   }

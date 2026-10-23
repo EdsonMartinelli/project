@@ -45,7 +45,24 @@ describe("Result Monad Pattern test", () => {
       });
 
       expect(handlerMock).toHaveBeenCalledWith(1);
+      expect(handlerMock).toHaveBeenCalledTimes(1);
       expect(result).toBe(0);
+    });
+
+    it("should return the data type when execute bind function", () => {
+      const success = new Success(1);
+      const handlerMock = jest.fn((x: number) => {
+        return new Success(2);
+      });
+
+      const result = success.bind(handlerMock).detach({
+        onSuccess: (data) => data,
+        onFailure: (er) => 0,
+      });
+
+      expect(handlerMock).toHaveBeenCalledWith(1);
+      expect(handlerMock).toHaveBeenCalledTimes(1);
+      expect(result).toBe(2);
     });
   });
 
@@ -62,7 +79,89 @@ describe("Result Monad Pattern test", () => {
       });
 
       expect(handlerMock).toHaveBeenCalledWith(1);
+      expect(handlerMock).toHaveBeenCalledTimes(1);
       expect(result).toBe(0);
+    });
+
+    it("should return the first failure error when execute bind function", () => {
+      const failure = new Failure<number, number>(1);
+      const handlerMock = jest.fn((x: number) => {
+        return new Failure<number, number>(200);
+      });
+
+      const result = failure.bind(handlerMock).detach({
+        onSuccess: (data) => data,
+        onFailure: (er) => er,
+      });
+
+      expect(handlerMock).toHaveBeenCalledTimes(0);
+      expect(result).toBe(1);
+    });
+
+    it("should return Failure even when there is a Success after it", () => {
+      const failure = new Failure<number, number>(1);
+      const handlerMock = jest.fn((x: number) => {
+        return new Success(200);
+      });
+
+      const result = failure.bind(handlerMock).detach({
+        onSuccess: (data) => data,
+        onFailure: (er) => er,
+      });
+
+      expect(handlerMock).toHaveBeenCalledTimes(0);
+      expect(result).toBe(1);
+    });
+
+    it("should return Failure even when there is a Success before it", () => {
+      const success = new Success<number, number>(1);
+
+      const fnSucess = (x: number) => {
+        return new Success(2);
+      };
+
+      const handlerMock = jest.fn((x: number) => {
+        return new Failure<number, number>(500);
+      });
+
+      const result = success
+        .bind(fnSucess)
+        .bind(handlerMock)
+        .detach({
+          onSuccess: (data) => data,
+          onFailure: (er) => er,
+        });
+
+      expect(handlerMock).toHaveBeenCalledTimes(1);
+      expect(result).toBe(500);
+    });
+
+    it("should return Failure even when there is a Success before and after it", () => {
+      const success = new Success<number, number>(1);
+
+      const fnSucess = (x: number) => {
+        return new Success(2);
+      };
+
+      const handlerMock = jest.fn((x: number) => {
+        return new Failure<number, number>(500);
+      });
+
+      const fnSucess2 = (x: number) => {
+        return new Success(3);
+      };
+
+      const result = success
+        .bind(fnSucess)
+        .bind(handlerMock)
+        .bind(fnSucess2)
+        .detach({
+          onSuccess: (data) => data,
+          onFailure: (er) => er,
+        });
+
+      expect(handlerMock).toHaveBeenCalledTimes(1);
+      expect(result).toBe(500);
     });
   });
 });
