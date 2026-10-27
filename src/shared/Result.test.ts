@@ -32,7 +32,7 @@ describe("Result Monad Pattern test", () => {
     });
   });
 
-  describe("Sucess", () => {
+  describe("Success", () => {
     it("should execute detach correctly using onSuccess field in handlers", () => {
       const success = new Success(1);
       const handlerMock = jest.fn((x: number) => {
@@ -64,16 +64,36 @@ describe("Result Monad Pattern test", () => {
       expect(handlerMock).toHaveBeenCalledTimes(1);
       expect(result).toBe(2);
     });
+
+    it("should return the correct data type when data type is null", () => {
+      const success = new Success(null);
+
+      const result = success.detach({
+        onSuccess: (data) => data,
+        onFailure: (er) => 0,
+      });
+      expect(result).toBe(null);
+    });
+
+    it("should return the correct data type when data type is undefined", () => {
+      const success = new Success(undefined);
+
+      const result = success.detach({
+        onSuccess: (data) => data,
+        onFailure: (er) => 0,
+      });
+      expect(result).toBe(undefined);
+    });
   });
 
   describe("Failure", () => {
     it("should execute detach correctly using onFailure field in handlers", () => {
-      const success = new Failure(1);
+      const failure = new Failure(1);
       const handlerMock = jest.fn((x: number) => {
         return x - 1;
       });
 
-      const result = success.detach({
+      const result = failure.detach({
         onSuccess: () => 777,
         onFailure: handlerMock,
       });
@@ -116,7 +136,7 @@ describe("Result Monad Pattern test", () => {
     it("should return Failure even when there is a Success before it", () => {
       const success = new Success<number, number>(1);
 
-      const fnSucess = (x: number) => {
+      const fnSuccess = (x: number) => {
         return new Success(2);
       };
 
@@ -125,7 +145,7 @@ describe("Result Monad Pattern test", () => {
       });
 
       const result = success
-        .bind(fnSucess)
+        .bind(fnSuccess)
         .bind(handlerMock)
         .detach({
           onSuccess: (data) => data,
@@ -139,7 +159,7 @@ describe("Result Monad Pattern test", () => {
     it("should return Failure even when there is a Success before and after it", () => {
       const success = new Success<number, number>(1);
 
-      const fnSucess = (x: number) => {
+      const fnSuccess = (x: number) => {
         return new Success(2);
       };
 
@@ -147,14 +167,14 @@ describe("Result Monad Pattern test", () => {
         return new Failure<number, number>(500);
       });
 
-      const fnSucess2 = (x: number) => {
+      const fnSuccess2 = (x: number) => {
         return new Success(3);
       };
 
       const result = success
-        .bind(fnSucess)
+        .bind(fnSuccess)
         .bind(handlerMock)
-        .bind(fnSucess2)
+        .bind(fnSuccess2)
         .detach({
           onSuccess: (data) => data,
           onFailure: (er) => er,
@@ -162,6 +182,26 @@ describe("Result Monad Pattern test", () => {
 
       expect(handlerMock).toHaveBeenCalledTimes(1);
       expect(result).toBe(500);
+    });
+
+    it("should return the correct data type when data type is null", () => {
+      const failure = new Failure(null);
+
+      const result = failure.detach({
+        onSuccess: (data) => 0,
+        onFailure: (er) => er,
+      });
+      expect(result).toBe(null);
+    });
+
+    it("should return the correct data type when data type is undefined", () => {
+      const failure = new Failure(undefined);
+
+      const result = failure.detach({
+        onSuccess: (data) => 0,
+        onFailure: (er) => er,
+      });
+      expect(result).toBe(undefined);
     });
   });
 });

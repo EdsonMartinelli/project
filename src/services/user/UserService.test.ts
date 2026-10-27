@@ -1,7 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
-import { UserService, type userInfo } from "./UserService.ts";
+import { UserService } from "./UserService.ts";
 import { Success } from "../../shared/Result.ts";
-import type { DomainError } from "../../shared/DomainError.ts";
 
 describe("UserService test", () => {
   const userService = new UserService();
