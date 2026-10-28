@@ -1,12 +1,7 @@
 import { UserService } from "../services/user/UserService.ts";
 import { type Request, type Response } from "express";
 import { ResultBuilder } from "../shared/Result.ts";
-import z from "zod";
-
-const user = z.strictObject({
-  email: z.email(),
-  password: z.string().max(30),
-});
+import { CreateUserDTO } from "../services/user/entities/CreateUserDTO.ts";
 
 export class UserController {
   private userService: UserService;
@@ -16,11 +11,10 @@ export class UserController {
   }
 
   public async getMessage(req: Request, res: Response) {
-    const data = user.safeParse(req.body);
-
-    if (!data.success) return res.json({ message: "controller error" });
-    const x = await this.userService.create(data.data);
-    ResultBuilder.unwrap(x, {
+    const result = await CreateUserDTO.create(req.body).bindAsync(
+      this.userService.create.bind(this.userService),
+    );
+    ResultBuilder.unwrap(result, {
       onSuccess: (data) => {
         res.json(data);
       },

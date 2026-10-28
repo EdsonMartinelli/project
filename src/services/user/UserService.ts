@@ -1,19 +1,19 @@
 import { ResultBuilder, type Result } from "../../shared/Result.ts";
-export type userInfo = {
-  email: string;
-  password: string;
-};
+import type { CreateUserDTO } from "./entities/CreateUserDTO.ts";
+
 export class UserService {
-  public async create(data: userInfo): Promise<Result<userInfo, number>> {
-    const x = await ResultBuilder.ok(data).bind(this.x).bindAsync(this.y);
-    return await x.bindAsync(this.w);
+  public async create(
+    data: CreateUserDTO,
+  ): Promise<Result<CreateUserDTO, string>> {
+    const j = await ResultBuilder.ok(data).bind(this.x).bindAsync(this.y);
+    return await j.bindAsync(this.w);
   }
 
-  private x(data: userInfo): Result<userInfo, number> {
+  private x(data: CreateUserDTO): Result<CreateUserDTO, string> {
     return ResultBuilder.ok(data);
   }
 
-  private async y(data: userInfo): Promise<Result<userInfo, number>> {
+  private async y(data: CreateUserDTO): Promise<Result<CreateUserDTO, string>> {
     return new Promise((resolve, _) =>
       setTimeout(() => {
         resolve(ResultBuilder.ok(data));
@@ -21,7 +21,7 @@ export class UserService {
     );
   }
 
-  private async w(data: userInfo): Promise<Result<userInfo, number>> {
+  private async w(data: CreateUserDTO): Promise<Result<CreateUserDTO, string>> {
     return new Promise((resolve, _) =>
       setTimeout(() => {
         resolve(ResultBuilder.ok(data));
