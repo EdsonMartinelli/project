@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: password
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app # Bindo Mount
+      - /app/node_modules # Anonymous Volumes
+    command: pnpm dev
+    depends_on:
+      - db
+      - adminer
