@@ -7,6 +7,6 @@ export const userRouter: Router = Router();
 const userController: UserController =
   new UserControllerFactory().getController();
 
-userRouter.get("/", (req: Request, res: Response) => {
+userRouter.post("/", (req: Request, res: Response) => {
   userController.getMessage(req, res);
 });
