@@ -1,7 +1,6 @@
 import { app } from "./app.ts";
 import type { Server } from "http";
-
-const port = 3000;
+import { EnvConfig } from "./config/EnvConfig.ts";
 
 function gracefulShutdown(signal: string, server: Server) {
   console.log(`${signal} signal received: closing HTTP server!`);
@@ -11,8 +10,10 @@ function gracefulShutdown(signal: string, server: Server) {
 }
 
 function bootstrap(): void {
-  const server = app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  EnvConfig.build();
+  console.log(`Configuration loaded!`);
+  const server = app.listen(EnvConfig.getPORT(), () => {
+    console.log(`Listening on port ${EnvConfig.getPORT()}`);
   });
 
   process.on("SIGTERM", () => {
