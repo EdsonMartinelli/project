@@ -5,10 +5,8 @@ export type userInfo = {
 };
 export class UserService {
   public async create(data: userInfo): Promise<Result<userInfo, number>> {
-    const x = (
-      await ResultBuilder.ok(data).bind(this.x).bindAsync(this.y)
-    ).bindAsync(this.w);
-    return x;
+    const x = await ResultBuilder.ok(data).bind(this.x).bindAsync(this.y);
+    return await x.bindAsync(this.w);
   }
 
   private x(data: userInfo): Result<userInfo, number> {
