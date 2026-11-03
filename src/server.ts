@@ -10,10 +10,9 @@ function gracefulShutdown(signal: string, server: Server) {
 }
 
 function bootstrap(): void {
-  EnvConfig.build();
   console.log(`Configuration loaded!`);
-  const server = app.listen(EnvConfig.getPORT(), () => {
-    console.log(`Listening on port ${EnvConfig.getPORT()}`);
+  const server = app.listen(EnvConfig.get().port(), () => {
+    console.log(`Listening on port ${EnvConfig.get().port()}`);
   });
 
   process.on("SIGTERM", () => {

@@ -8,12 +8,18 @@ const config = z.strictObject({
 });
 
 export class EnvConfig {
-  private static DATABASE_URL: string;
-  private static PORT: number = 3000;
+  private DATABASE_URL: string;
+  private PORT: number = 3000;
+  private static env: EnvConfig | null;
 
-  private constructor() {}
+  private constructor(data: { DATABASE_URL: string; PORT: number }) {
+    this.DATABASE_URL = data.DATABASE_URL;
+    this.PORT = data.PORT;
+  }
 
-  static build(): void {
+  static get(): EnvConfig {
+    if (this.env != null) return this.env;
+
     dotenv.config({
       path: path.join(import.meta.dirname, "../../.env.development"),
       quiet: true,
@@ -25,17 +31,17 @@ export class EnvConfig {
     };
     const configAssert = config.safeParse(processVars);
 
-    if (!configAssert.success) return;
-
-    this.DATABASE_URL = configAssert.data.DATABASE_URL;
-    this.PORT = configAssert.data.PORT;
+    if (!configAssert.success)
+      throw Error("Not all required environment variables are set!");
+    this.env = new EnvConfig(configAssert.data);
+    return this.env;
   }
 
-  static getDatabaseURL() {
+  databaseURL() {
     return this.DATABASE_URL;
   }
 
-  static getPORT() {
+  port() {
     return this.PORT;
   }
 }
