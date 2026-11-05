@@ -4,6 +4,10 @@ services:
     shm_size: 128mb
     environment:
       POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: db
+    ports:
+      - 5432:5432
 
   adminer:
     image: adminer
@@ -15,7 +19,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app # Bindo Mount
+      - .:/app # Bind Mount
       - /app/node_modules # Anonymous Volumes
     command: pnpm dev
     depends_on:
