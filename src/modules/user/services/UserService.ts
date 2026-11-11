@@ -1,5 +1,5 @@
 import { ResultBuilder, type Result } from "../../../shared/results/Result.ts";
-import type { CreateUserServiceDTO } from "./entities/CreateUserServiceDTO.ts";
+import type { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
 
 export class UserService {
   public async create(

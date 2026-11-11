@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
-import { CreateUserServiceDTO } from "./CreateUserServiceDTO.ts";
-import { Failure, Success } from "../../../../shared/results/Result.ts";
+import { CreateUserServiceDTO } from "./UserServiceDTOs.ts";
+import { Failure, Success } from "../../../shared/results/Result.ts";
 
 describe("CreateUserServiceDTO tests", () => {
   it("should return success when user input fields is ok", async () => {

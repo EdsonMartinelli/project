@@ -1,5 +1,5 @@
 import { ResultBuilder } from "../../../shared/results/Result.ts";
-import { CreateUserServiceDTO } from "../services/entities/CreateUserServiceDTO.ts";
+import { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
 import { UserService } from "../services/UserService.ts";
 import { type Request, type Response } from "express";
 
