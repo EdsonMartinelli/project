@@ -1,5 +1,8 @@
 import z from "zod";
-import { ResultBuilder, type Result } from "../../../shared/Result.ts";
+import {
+  ResultBuilder,
+  type Result,
+} from "../../../../shared/results/Result.ts";
 
 const user = z.strictObject({
   email: z.email(),
@@ -7,7 +10,7 @@ const user = z.strictObject({
   name: z.string(),
 });
 
-export class CreateUserDTO {
+export class CreateUserServiceDTO {
   public readonly email: string;
   public readonly password: string;
   public readonly name: string;
@@ -18,9 +21,11 @@ export class CreateUserDTO {
     this.name = data.name;
   }
 
-  static create(data: Record<string, string>): Result<CreateUserDTO, string> {
+  static create(
+    data: Record<string, string>,
+  ): Result<CreateUserServiceDTO, string> {
     const result = user.safeParse(data);
     if (!result.success) return ResultBuilder.fail("field errors");
-    return ResultBuilder.ok(new CreateUserDTO(result.data));
+    return ResultBuilder.ok(new CreateUserServiceDTO(result.data));
   }
 }

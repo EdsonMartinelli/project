@@ -1,15 +1,15 @@
 import { describe, expect, it } from "@jest/globals";
-import { CreateUserDTO } from "./CreateUserDTO.ts";
-import { Failure, Success } from "../../../shared/Result.ts";
+import { CreateUserServiceDTO } from "./CreateUserServiceDTO.ts";
+import { Failure, Success } from "../../../../shared/results/Result.ts";
 
-describe("CreateUserDTO tests", () => {
+describe("CreateUserServiceDTO tests", () => {
   it("should return success when user input fields is ok", async () => {
     const data = {
       email: "test@test.com",
       password: "1234",
       name: "test",
     };
-    const user = CreateUserDTO.create(data);
+    const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Success);
   });
 
@@ -19,7 +19,7 @@ describe("CreateUserDTO tests", () => {
       password: "1234",
       name: "test",
     };
-    const user = CreateUserDTO.create(data);
+    const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
   });
 
@@ -28,7 +28,7 @@ describe("CreateUserDTO tests", () => {
       email: "test@test.com",
       password: "1234",
     };
-    const user = CreateUserDTO.create(data);
+    const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
   });
 
@@ -38,7 +38,7 @@ describe("CreateUserDTO tests", () => {
       password: "123456789101112131415161718192021222324252627",
       name: "test",
     };
-    const user = CreateUserDTO.create(data);
+    const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
   });
 });

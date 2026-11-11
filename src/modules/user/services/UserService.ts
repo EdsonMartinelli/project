@@ -1,19 +1,21 @@
-import { ResultBuilder, type Result } from "../../shared/Result.ts";
-import type { CreateUserDTO } from "./entities/CreateUserDTO.ts";
+import { ResultBuilder, type Result } from "../../../shared/results/Result.ts";
+import type { CreateUserServiceDTO } from "./entities/CreateUserServiceDTO.ts";
 
 export class UserService {
   public async create(
-    data: CreateUserDTO,
-  ): Promise<Result<CreateUserDTO, string>> {
+    data: CreateUserServiceDTO,
+  ): Promise<Result<CreateUserServiceDTO, string>> {
     const j = await ResultBuilder.ok(data).bind(this.x).bindAsync(this.y);
     return await j.bindAsync(this.w);
   }
 
-  private x(data: CreateUserDTO): Result<CreateUserDTO, string> {
+  private x(data: CreateUserServiceDTO): Result<CreateUserServiceDTO, string> {
     return ResultBuilder.ok(data);
   }
 
-  private async y(data: CreateUserDTO): Promise<Result<CreateUserDTO, string>> {
+  private async y(
+    data: CreateUserServiceDTO,
+  ): Promise<Result<CreateUserServiceDTO, string>> {
     return new Promise((resolve, _) =>
       setTimeout(() => {
         resolve(ResultBuilder.ok(data));
@@ -21,7 +23,9 @@ export class UserService {
     );
   }
 
-  private async w(data: CreateUserDTO): Promise<Result<CreateUserDTO, string>> {
+  private async w(
+    data: CreateUserServiceDTO,
+  ): Promise<Result<CreateUserServiceDTO, string>> {
     return new Promise((resolve, _) =>
       setTimeout(() => {
         resolve(ResultBuilder.ok(data));

@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
-import { UserControllerFactory } from "../factories/UserControllerFactory.ts";
-import type { UserController } from "../controllers/UserController.ts";
+import { UserControllerFactory } from "../modules/user/factories/UserControllerFactory.ts";
+import type { UserController } from "../modules/user/controllers/UserController.ts";
 
 export const userRouter: Router = Router();
 

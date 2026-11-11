@@ -1,7 +1,7 @@
-import { UserService } from "../services/user/UserService.ts";
+import { ResultBuilder } from "../../../shared/results/Result.ts";
+import { CreateUserServiceDTO } from "../services/entities/CreateUserServiceDTO.ts";
+import { UserService } from "../services/UserService.ts";
 import { type Request, type Response } from "express";
-import { ResultBuilder } from "../shared/Result.ts";
-import { CreateUserDTO } from "../services/user/entities/CreateUserDTO.ts";
 
 export class UserController {
   private userService: UserService;
@@ -11,7 +11,7 @@ export class UserController {
   }
 
   public async getMessage(req: Request, res: Response) {
-    const result = await CreateUserDTO.create(req.body).bindAsync(
+    const result = await CreateUserServiceDTO.create(req.body).bindAsync(
       this.userService.create.bind(this.userService),
     );
     ResultBuilder.unwrap(result, {
