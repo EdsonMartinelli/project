@@ -1,12 +1,24 @@
-import { ResultBuilder, type Result } from "../../../shared/results/Result.ts";
-import type { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
+import {
+  ResultAsync,
+  ResultBuilder,
+  ResultUtil,
+  type Result,
+} from "../../../shared/results/Result.ts";
+import { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
 
 export class UserService {
-  public async create(
+  public create(
     data: CreateUserServiceDTO,
   ): Promise<Result<CreateUserServiceDTO, string>> {
-    const j = await ResultBuilder.ok(data).bind(this.x).bindAsync(this.y);
-    return await j.bindAsync(this.w);
+    return ResultBuilder.ok(data)
+      .bind(this.x)
+      .asynchronous()
+      .bind(this.y)
+      .bind(this.y)
+      .bind(this.w)
+      .getPromise();
+    // .then(ResultUtil.bindWith(this.w))
+    // .then(ResultUtil.bindWith(this.w));
   }
 
   private x(data: CreateUserServiceDTO): Result<CreateUserServiceDTO, string> {

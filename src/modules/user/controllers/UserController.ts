@@ -11,10 +11,11 @@ export class UserController {
   }
 
   public async getMessage(req: Request, res: Response) {
-    const result = await CreateUserServiceDTO.create(req.body).bindAsync(
-      this.userService.create.bind(this.userService),
-    );
-    ResultBuilder.unwrap(result, {
+    const result = CreateUserServiceDTO.create(req.body)
+      .asynchronous()
+      .bind(this.userService.create.bind(this.userService));
+
+    await ResultBuilder.unwrapAsync(result, {
       onSuccess: (data) => {
         res.json(data);
       },
