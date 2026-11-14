@@ -16,9 +16,9 @@ export class UserService {
       .bind(this.y)
       .bind(this.y)
       .bind(this.w)
-      .getPromise();
-    // .then(ResultUtil.bindWith(this.w))
-    // .then(ResultUtil.bindWith(this.w));
+      .bindSync(this.x)
+      .bind(this.w)
+      .finish();
   }
 
   private x(data: CreateUserServiceDTO): Result<CreateUserServiceDTO, string> {

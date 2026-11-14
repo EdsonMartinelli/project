@@ -24,7 +24,11 @@ export class ResultAsync<T, E> {
     );
   }
 
-  getPromise() {
+  bindSync<D, U>(fn: (data: T) => Result<D, U>): ResultAsync<D, E | U> {
+    return new ResultAsync(this.promisedData.then((data) => data.bind(fn)));
+  }
+
+  finish() {
     return this.promisedData;
   }
 }
@@ -114,7 +118,7 @@ export class ResultBuilder {
       onFailure: (error: E) => R;
     },
   ) {
-    const promisedResult = await result.getPromise();
+    const promisedResult = await result.finish();
     return promisedResult.detach(handlers);
   }
 }
