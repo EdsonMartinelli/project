@@ -21,7 +21,7 @@ services:
     volumes:
       - .:/app # Bind Mount
       - /app/node_modules # Anonymous Volumes
-    command: pnpm dev
+    command: sh -c "pnpm drizzle-kit push && pnpm dev"
     depends_on:
       - db
       - adminer

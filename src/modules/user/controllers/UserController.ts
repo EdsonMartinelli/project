@@ -1,19 +1,19 @@
 import { ResultBuilder } from "../../../shared/results/Result.ts";
 import { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
-import { UserService } from "../services/UserService.ts";
+import { CreateUserService } from "../services/CreateUserService.ts";
 import { type Request, type Response } from "express";
 
 export class UserController {
-  private userService: UserService;
+  private createUserService: CreateUserService;
 
-  constructor(userService: UserService) {
-    this.userService = userService;
+  constructor(createUserService: CreateUserService) {
+    this.createUserService = createUserService;
   }
 
-  public async getMessage(req: Request, res: Response) {
+  public async createUser(req: Request, res: Response) {
     const result = CreateUserServiceDTO.create(req.body)
       .asynchronous()
-      .bind(this.userService.create.bind(this.userService));
+      .bind(this.createUserService.create.bind(this.createUserService));
 
     await ResultBuilder.unwrapAsync(result, {
       onSuccess: (data) => {

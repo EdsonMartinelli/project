@@ -1,11 +1,13 @@
 import { UserController } from "../controllers/UserController.ts";
-import { UserService } from "../services/UserService.ts";
+import { UserRepository } from "../repositories/UserRepository.ts";
+import { CreateUserService } from "../services/CreateUserService.ts";
 
 export class UserControllerFactory {
   private userController: UserController;
   constructor() {
-    const userService = new UserService();
-    this.userController = new UserController(userService);
+    this.userController = new UserController(
+      new CreateUserService(new UserRepository()),
+    );
   }
 
   public getController(): UserController {

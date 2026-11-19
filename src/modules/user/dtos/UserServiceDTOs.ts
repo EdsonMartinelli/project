@@ -26,3 +26,26 @@ export class CreateUserServiceDTO {
     return ResultBuilder.ok(new CreateUserServiceDTO(result.data));
   }
 }
+
+export class UserServiceDTO {
+  public readonly id: string;
+  public readonly email: string;
+  public readonly password: string;
+  public readonly name: string;
+
+  private constructor(data: {
+    id: string;
+    email: string;
+    password: string;
+    name: string;
+  }) {
+    this.id = data.id;
+    this.email = data.email;
+    this.password = data.password;
+    this.name = data.name;
+  }
+
+  static create(data: UserServiceDTO): UserServiceDTO {
+    return new UserServiceDTO(data);
+  }
+}

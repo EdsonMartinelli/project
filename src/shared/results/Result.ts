@@ -78,9 +78,7 @@ export class Failure<T, E> implements Result<T, E> {
   bindAsync<D, U>(
     fn: (data: T) => Promise<Result<D, U>>,
   ): Promise<Result<D, E>> {
-    return new Promise((resolve, _) => {
-      resolve(new Failure<D, E>(this.error));
-    });
+    return Promise.resolve(new Failure<D, E>(this.error));
   }
 
   asynchronous() {

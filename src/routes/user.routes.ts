@@ -8,5 +8,5 @@ const userController: UserController =
   new UserControllerFactory().getController();
 
 userRouter.post("/", (req: Request, res: Response) => {
-  userController.getMessage(req, res);
+  userController.createUser(req, res);
 });
