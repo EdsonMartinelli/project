@@ -52,7 +52,7 @@ export class Success<T, E> implements Result<T, E> {
     return fn(this.data);
   }
 
-  asynchronous() {
+  asynchronous(): ResultAsync<T, E> {
     return new ResultAsync<T, E>(
       new Promise((resolve, _) => {
         resolve(this);
@@ -81,7 +81,7 @@ export class Failure<T, E> implements Result<T, E> {
     return Promise.resolve(new Failure<D, E>(this.error));
   }
 
-  asynchronous() {
+  asynchronous(): ResultAsync<T, E> {
     return new ResultAsync<T, E>(
       new Promise((resolve, _) => {
         resolve(this);

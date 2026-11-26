@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from "@jest/globals";
-import { Failure, ResultBuilder, Success } from "./Result.ts";
+import { Failure, ResultAsync, ResultBuilder, Success } from "./Result.ts";
 
 describe("Result Monad Pattern test", () => {
   describe("Result Builder", () => {
@@ -83,6 +83,30 @@ describe("Result Monad Pattern test", () => {
         onFailure: (er) => 0,
       });
       expect(result).toBe(undefined);
+    });
+
+    it("should return a ResultAsync object", () => {
+      const success = new Success(1).asynchronous();
+      expect(success).toBeInstanceOf(ResultAsync);
+    });
+
+    it("should return a Promised with the correcty data when it is resolved", async () => {
+      const success = new Success(1);
+      const fn = async (data: number) => {
+        return Promise.resolve(new Success(data));
+      };
+
+      const promisedResult = success.bindAsync(fn);
+
+      expect(promisedResult).toBeInstanceOf(Promise);
+
+      const resolvedResult = await promisedResult;
+
+      const result = resolvedResult.detach({
+        onSuccess: (data) => data,
+        onFailure: (er) => 0,
+      });
+      expect(result).toBe(1);
     });
   });
 
@@ -202,6 +226,30 @@ describe("Result Monad Pattern test", () => {
         onFailure: (er) => er,
       });
       expect(result).toBe(undefined);
+    });
+
+    it("should return a ResultAsync object", () => {
+      const failure = new Failure(1).asynchronous();
+      expect(failure).toBeInstanceOf(ResultAsync);
+    });
+
+    it("should return a Promised with the correcty error when it is resolved", async () => {
+      const failure = new Failure<number, number>(1);
+      const fn = async (data: number) => {
+        return Promise.resolve(new Failure(2));
+      };
+
+      const promisedResult = failure.bindAsync(fn);
+
+      expect(promisedResult).toBeInstanceOf(Promise);
+
+      const resolvedResult = await promisedResult;
+
+      const result = resolvedResult.detach({
+        onSuccess: (data) => 0,
+        onFailure: (er) => er,
+      });
+      expect(result).toBe(1);
     });
   });
 });

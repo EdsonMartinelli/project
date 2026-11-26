@@ -7,7 +7,7 @@ describe("CreateUserServiceDTO tests", () => {
     const data = {
       email: "test@test.com",
       password: "1234",
-      name: "test",
+      username: "test",
     };
     const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Success);
@@ -17,7 +17,7 @@ describe("CreateUserServiceDTO tests", () => {
     const data = {
       email: "test",
       password: "1234",
-      name: "test",
+      username: "test",
     };
     const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
@@ -36,7 +36,7 @@ describe("CreateUserServiceDTO tests", () => {
     const data = {
       email: "test@test.com",
       password: "123456789101112131415161718192021222324252627",
-      name: "test",
+      username: "test",
     };
     const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);

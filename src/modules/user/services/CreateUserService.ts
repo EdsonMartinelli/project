@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { ResultBuilder, type Result } from "../../../shared/results/Result.ts";
 import { UserRepositoryDTO } from "../dtos/UserRepositoryDTOs.ts";
 import {
@@ -27,10 +28,10 @@ export class CreateUserService {
     data: CreateUserServiceDTO,
   ): Result<UserServiceDTO, string> {
     const userWithId = UserServiceDTO.create({
-      id: "1",
+      id: randomUUID(),
       email: data.email,
       password: data.password,
-      name: data.name,
+      username: data.username,
     });
     return ResultBuilder.ok(userWithId);
   }
@@ -42,7 +43,7 @@ export class CreateUserService {
       id: user.id,
       email: user.email,
       password: user.password,
-      name: user.name,
+      username: user.username,
     });
     return await this.userRepository.createUser(userRepository);
   };
@@ -54,7 +55,7 @@ export class CreateUserService {
       id: user.id,
       email: user.email,
       password: user.password,
-      name: user.name,
+      username: user.username,
     });
     return ResultBuilder.ok(userConverted);
   }
