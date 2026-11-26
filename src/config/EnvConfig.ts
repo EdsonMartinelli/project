@@ -5,16 +5,23 @@ import z from "zod";
 const config = z.strictObject({
   DATABASE_URL: z.string(),
   PORT: z.coerce.number().nonnegative().int(),
+  SECRET: z.string(),
 });
 
 export class EnvConfig {
   private DATABASE_URL: string;
   private PORT: number = 3000;
+  private SECRET: string;
   private static env: EnvConfig | null;
 
-  private constructor(data: { DATABASE_URL: string; PORT: number }) {
+  private constructor(data: {
+    DATABASE_URL: string;
+    PORT: number;
+    SECRET: string;
+  }) {
     this.DATABASE_URL = data.DATABASE_URL;
     this.PORT = data.PORT;
+    this.SECRET = data.SECRET;
   }
 
   static get(): EnvConfig {
@@ -28,6 +35,7 @@ export class EnvConfig {
     const processVars = {
       DATABASE_URL: process.env.DATABASE_URL,
       PORT: process.env.PORT,
+      SECRET: process.env.SECRET,
     };
     const configAssert = config.safeParse(processVars);
 
@@ -43,5 +51,9 @@ export class EnvConfig {
 
   port() {
     return this.PORT;
+  }
+
+  secret() {
+    return this.SECRET;
   }
 }
