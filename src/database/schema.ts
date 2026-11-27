@@ -4,5 +4,5 @@ export const usersTable = pgTable("users", {
   id: uuid().primaryKey().unique(),
   username: varchar({ length: UserConstraints.USERNAME_MAX_LENGTH }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
-  password: varchar({ length: UserConstraints.PASSWORD_MAX_LENGTH }).notNull(),
+  password: varchar({ length: 255 }).notNull(),
 });

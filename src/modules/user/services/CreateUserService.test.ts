@@ -10,13 +10,14 @@ import type { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
 import type { IUserRepository } from "../repositories/IUserRepository.ts";
 import { UserRepositoryDTO } from "../dtos/UserRepositoryDTOs.ts";
 import { randomUUID } from "node:crypto";
+import { Hasher } from "../../../shared/hash/Hasher.ts";
 
 class FakeUserRepository implements IUserRepository {
   private db: UserRepositoryDTO[] = [
     {
       id: randomUUID(),
       email: "fail@fail.com",
-      password: "123468",
+      password: "1234678910",
       username: "test",
     },
   ];
@@ -40,21 +41,27 @@ class FakeUserRepository implements IUserRepository {
 
 describe("UserService test", () => {
   it("should return success when user is created", async () => {
-    const userService = new CreateUserService(new FakeUserRepository());
+    const userService = new CreateUserService(
+      new FakeUserRepository(),
+      new Hasher(),
+    );
     const data: CreateUserServiceDTO = {
       email: "success@success.com",
-      password: "1234",
+      password: "12345678910",
       username: "test",
     };
     const result = await userService.create(data);
     expect(result).toBeInstanceOf(Success);
   });
 
-  it("should return fail when user is already created", async () => {
-    const userService = new CreateUserService(new FakeUserRepository());
+  it("should return failure when user is already created", async () => {
+    const userService = new CreateUserService(
+      new FakeUserRepository(),
+      new Hasher(),
+    );
     const data: CreateUserServiceDTO = {
       email: "fail@fail.com",
-      password: "1234",
+      password: "12345678910",
       username: "test",
     };
     const secondResult = await userService.create(data);
