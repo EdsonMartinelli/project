@@ -1,19 +1,21 @@
+export type UserErrorKind = "INTERNAL" | "INVALID_FIELDS" | "DUPLICATED_USER";
+
 export interface UserError {
-  readonly error: number;
+  readonly kind: UserErrorKind;
   readonly message: string;
 }
 
 export class DuplicatedUser implements UserError {
-  public error: number = 400;
-  public message: string = "Duplicated User!";
-}
-
-export class HashPasswordFailUser implements UserError {
-  public error: number = 400;
-  public message: string = "Cant hash the password!";
+  public readonly kind = "DUPLICATED_USER";
+  public readonly message: string = "Duplicated User!";
 }
 
 export class InvalidFieldsUser implements UserError {
-  public error: number = 400;
-  public message: string = "Fields are invalid!";
+  public readonly kind = "INVALID_FIELDS";
+  public readonly message: string = "Fields are invalid!";
+}
+
+export class InternalError implements UserError {
+  public readonly kind = "INTERNAL";
+  public readonly message: string = "Internal Error!";
 }

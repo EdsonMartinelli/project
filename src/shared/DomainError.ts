@@ -1,4 +1,4 @@
 export interface DomainError {
-  readonly error: string;
+  readonly kind: string;
   readonly message: string;
 }

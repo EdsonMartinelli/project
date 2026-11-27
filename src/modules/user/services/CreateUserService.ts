@@ -7,7 +7,7 @@ import {
 } from "../dtos/UserServiceDTOs.ts";
 import type { IUserRepository } from "../repositories/IUserRepository.ts";
 import type { IHasher } from "../../../shared/hash/Hasher.ts";
-import { HashPasswordFailUser, type UserError } from "../errors/UserError.ts";
+import { InternalError, type UserError } from "../errors/UserError.ts";
 
 export class CreateUserService {
   private userRepository: IUserRepository;
@@ -52,7 +52,7 @@ export class CreateUserService {
         );
       },
       onFailure: (error): Result<UserServiceDTO, UserError> => {
-        return ResultBuilder.fail(new HashPasswordFailUser());
+        return ResultBuilder.fail(new InternalError());
       },
     });
   };
@@ -66,7 +66,16 @@ export class CreateUserService {
       password: user.password,
       username: user.username,
     });
-    return await this.userRepository.createUser(userRepository);
+
+    const userCreated = await this.userRepository.createUser(userRepository);
+    return ResultBuilder.unwrap(userCreated, {
+      onSuccess: (data): Result<UserServiceDTO, UserError> => {
+        return ResultBuilder.ok(data);
+      },
+      onFailure: (error): Result<UserServiceDTO, UserError> => {
+        return ResultBuilder.fail(error);
+      },
+    });
   };
 
   private getServiceType(

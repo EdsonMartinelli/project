@@ -6,11 +6,14 @@ import {
   Success,
   type Result,
 } from "../../../shared/results/Result.ts";
-import type { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
+import type {
+  CreateUserServiceDTO,
+  UserServiceDTO,
+} from "../dtos/UserServiceDTOs.ts";
 import type { IUserRepository } from "../repositories/IUserRepository.ts";
 import { UserRepositoryDTO } from "../dtos/UserRepositoryDTOs.ts";
 import { randomUUID } from "node:crypto";
-import { Hasher, type IHasher } from "../../../shared/hash/Hasher.ts";
+import { type IHasher } from "../../../shared/hash/Hasher.ts";
 import { DuplicatedUser, type UserError } from "../errors/UserError.ts";
 
 class FakeUserRepository implements IUserRepository {
@@ -76,5 +79,16 @@ describe("UserService test", () => {
     };
     const secondResult = await userService.create(data);
     expect(secondResult).toBeInstanceOf(Failure);
+
+    const resultErrorCode = ResultBuilder.unwrap(secondResult, {
+      onSuccess: function (data: UserServiceDTO) {
+        return "fail in test";
+      },
+      onFailure: function (error: UserError) {
+        return error.kind;
+      },
+    });
+
+    expect(resultErrorCode).toBe("DUPLICATED_USER");
   });
 });

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "@jest/globals";
 import { CreateUserServiceDTO } from "./UserServiceDTOs.ts";
-import { Failure, Success } from "../../../shared/results/Result.ts";
+import {
+  Failure,
+  ResultBuilder,
+  Success,
+} from "../../../shared/results/Result.ts";
+import type { UserError } from "../errors/UserError.ts";
 
 describe("CreateUserServiceDTO tests", () => {
   it("should return success when user input fields is ok", async () => {
@@ -21,6 +26,16 @@ describe("CreateUserServiceDTO tests", () => {
     };
     const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
+
+    // const resultErrorCode = ResultBuilder.unwrap(user, {
+    //   onSuccess: function (data: CreateUserServiceDTO) {
+    //     return 200;
+    //   },
+    //   onFailure: function (error: UserError) {
+    //     return error.error;
+    //   },
+    // });
+    // expect(resultErrorCode).toBe(400);
   });
 
   it("should return failure when any user input fields is undefined", async () => {
@@ -30,6 +45,15 @@ describe("CreateUserServiceDTO tests", () => {
     };
     const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
+    // const resultErrorCode = ResultBuilder.unwrap(user, {
+    //   onSuccess: function (data: CreateUserServiceDTO) {
+    //     return 200;
+    //   },
+    //   onFailure: function (error: UserError) {
+    //     return error.error;
+    //   },
+    // });
+    // expect(resultErrorCode).toBe(400);
   });
 
   it("should return failure when user password is too big", async () => {
@@ -40,5 +64,14 @@ describe("CreateUserServiceDTO tests", () => {
     };
     const user = CreateUserServiceDTO.create(data);
     expect(user).toBeInstanceOf(Failure);
+    // const resultErrorCode = ResultBuilder.unwrap(user, {
+    //   onSuccess: function (data: CreateUserServiceDTO) {
+    //     return 200;
+    //   },
+    //   onFailure: function (error: UserError) {
+    //     return error.error;
+    //   },
+    // });
+    // expect(resultErrorCode).toBe(400);
   });
 });
