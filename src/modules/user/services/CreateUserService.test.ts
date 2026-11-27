@@ -10,7 +10,8 @@ import type { CreateUserServiceDTO } from "../dtos/UserServiceDTOs.ts";
 import type { IUserRepository } from "../repositories/IUserRepository.ts";
 import { UserRepositoryDTO } from "../dtos/UserRepositoryDTOs.ts";
 import { randomUUID } from "node:crypto";
-import { Hasher } from "../../../shared/hash/Hasher.ts";
+import { Hasher, type IHasher } from "../../../shared/hash/Hasher.ts";
+import { DuplicatedUser, type UserError } from "../errors/UserError.ts";
 
 class FakeUserRepository implements IUserRepository {
   private db: UserRepositoryDTO[] = [
@@ -24,7 +25,7 @@ class FakeUserRepository implements IUserRepository {
 
   createUser(
     data: UserRepositoryDTO,
-  ): Promise<Result<UserRepositoryDTO, string>> {
+  ): Promise<Result<UserRepositoryDTO, UserError>> {
     const alreadyUsed = this.db.some((d) => {
       if (d.email == data.email) {
         return true;
@@ -32,10 +33,19 @@ class FakeUserRepository implements IUserRepository {
       return false;
     });
     if (alreadyUsed) {
-      return Promise.resolve(ResultBuilder.fail("Already Exist"));
+      return Promise.resolve(ResultBuilder.fail(new DuplicatedUser()));
     }
     this.db.push(data);
     return Promise.resolve(ResultBuilder.ok(data));
+  }
+}
+
+class FakeHasher implements IHasher {
+  async hash(value: string): Promise<Result<string, string>> {
+    return Promise.resolve(new Success(value));
+  }
+  async compare(value: string, hash: string): Promise<Result<boolean, string>> {
+    return Promise.resolve(new Success(true));
   }
 }
 
@@ -43,7 +53,7 @@ describe("UserService test", () => {
   it("should return success when user is created", async () => {
     const userService = new CreateUserService(
       new FakeUserRepository(),
-      new Hasher(),
+      new FakeHasher(),
     );
     const data: CreateUserServiceDTO = {
       email: "success@success.com",
@@ -57,7 +67,7 @@ describe("UserService test", () => {
   it("should return failure when user is already created", async () => {
     const userService = new CreateUserService(
       new FakeUserRepository(),
-      new Hasher(),
+      new FakeHasher(),
     );
     const data: CreateUserServiceDTO = {
       email: "fail@fail.com",

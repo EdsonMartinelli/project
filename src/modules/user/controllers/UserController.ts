@@ -17,10 +17,11 @@ export class UserController {
 
     await ResultBuilder.unwrapAsync(result, {
       onSuccess: (data) => {
-        res.json(data);
+        //res.json(data);
+        res.status(201).json(data);
       },
       onFailure: (er) => {
-        res.json(er);
+        res.status(er.error).json(er.message);
       },
     });
   }

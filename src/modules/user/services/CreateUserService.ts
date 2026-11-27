@@ -7,6 +7,7 @@ import {
 } from "../dtos/UserServiceDTOs.ts";
 import type { IUserRepository } from "../repositories/IUserRepository.ts";
 import type { IHasher } from "../../../shared/hash/Hasher.ts";
+import { HashPasswordFailUser, type UserError } from "../errors/UserError.ts";
 
 export class CreateUserService {
   private userRepository: IUserRepository;
@@ -19,10 +20,10 @@ export class CreateUserService {
 
   public create(
     data: CreateUserServiceDTO,
-  ): Promise<Result<UserServiceDTO, string>> {
+  ): Promise<Result<UserServiceDTO, UserError>> {
     return this.generateUserId(data)
       .asynchronous()
-      .bind(this.generateHash)
+      .bind(this.generatePasswordHash)
       .bind(this.saveUserInDB)
       .bindSync(this.getServiceType)
       .finish();
@@ -30,7 +31,7 @@ export class CreateUserService {
 
   private generateUserId(
     data: CreateUserServiceDTO,
-  ): Result<UserServiceDTO, string> {
+  ): Result<UserServiceDTO, UserError> {
     const userWithId = UserServiceDTO.create({
       id: randomUUID(),
       email: data.email,
@@ -40,23 +41,25 @@ export class CreateUserService {
     return ResultBuilder.ok(userWithId);
   }
 
-  private generateHash = async (user: UserServiceDTO) => {
+  private generatePasswordHash = async (
+    user: UserServiceDTO,
+  ): Promise<Result<UserServiceDTO, UserError>> => {
     const hashedPassword = await this.hasher.hash(user.password);
     return ResultBuilder.unwrap(hashedPassword, {
-      onSuccess: (data): Result<UserServiceDTO, string> => {
+      onSuccess: (data): Result<UserServiceDTO, UserError> => {
         return ResultBuilder.ok(
           UserServiceDTO.create({ ...user, password: data }),
         );
       },
-      onFailure: (error): Result<UserServiceDTO, string> => {
-        return ResultBuilder.fail("Error on hash password");
+      onFailure: (error): Result<UserServiceDTO, UserError> => {
+        return ResultBuilder.fail(new HashPasswordFailUser());
       },
     });
   };
 
   private saveUserInDB = async (
     user: UserServiceDTO,
-  ): Promise<Result<UserRepositoryDTO, string>> => {
+  ): Promise<Result<UserRepositoryDTO, UserError>> => {
     const userRepository = UserRepositoryDTO.create({
       id: user.id,
       email: user.email,
@@ -68,7 +71,7 @@ export class CreateUserService {
 
   private getServiceType(
     user: UserRepositoryDTO,
-  ): Result<UserServiceDTO, string> {
+  ): Result<UserServiceDTO, UserError> {
     const userConverted = UserServiceDTO.create({
       id: user.id,
       email: user.email,

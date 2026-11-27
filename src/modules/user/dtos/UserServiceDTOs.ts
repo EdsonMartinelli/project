@@ -1,6 +1,7 @@
 import z from "zod";
 import { ResultBuilder, type Result } from "../../../shared/results/Result.ts";
 import { UserConstraints } from "../constraints/UserConstraints.ts";
+import { InvalidFieldsUser, type UserError } from "../errors/UserError.ts";
 
 const createUserSchema = z.strictObject({
   email: z.email(),
@@ -31,9 +32,9 @@ export class CreateUserServiceDTO {
 
   static create(
     data: Record<string, string>,
-  ): Result<CreateUserServiceDTO, string> {
+  ): Result<CreateUserServiceDTO, UserError> {
     const result = createUserSchema.safeParse(data);
-    if (!result.success) return ResultBuilder.fail("field errors");
+    if (!result.success) return ResultBuilder.fail(new InvalidFieldsUser());
     return ResultBuilder.ok(new CreateUserServiceDTO(result.data));
   }
 }
